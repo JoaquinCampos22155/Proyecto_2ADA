@@ -34,6 +34,7 @@ arrays_20 = [
     [19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
     [10, 12, 14, 16, 18, 20, 0, 2, 4, 6, 8, 1, 3, 5, 7, 9, 11, 13, 15, 17]
 ]
+
 # Algoritmo Subset Sum con memoización
 def subset_sum_memo(arr, T):
     memo = {}
@@ -50,23 +51,42 @@ def subset_sum_memo(arr, T):
         return memo[(i, target)]
     return dp(len(arr) - 1, T)
 
-# T fijo para todos los arreglos
+# T fijo
 T = 195
 
-# Medir tiempos (en milisegundos)
 execution_times_ms = []
-for arr in arrays_20:
-    start = time.time()
-    subset_sum_memo(arr, T)
-    end = time.time()
-    execution_times_ms.append((end - start) * 1000)  # Convertir a milisegundos
+theoretical_O = []
 
-# Graficar resultados
-array_indices = list(range(1, 31))
-plt.plot(array_indices, execution_times_ms, marker='o')
+print("Índice\tTiempo (ms)\tO(n*T)")
+for idx, arr in enumerate(arrays_20, 1):
+    start = time.perf_counter()
+    subset_sum_memo(arr, T)
+    end = time.perf_counter()
+    elapsed_ms = (end - start) * 1000
+    execution_times_ms.append(elapsed_ms)
+    n = len(arr)
+    cost = n * T
+    theoretical_O.append(cost)
+    print(f"{idx}\t{elapsed_ms:.3f}\t\t{cost}")
+
+# --------- PRIMERA GRÁFICA: SOLO TIEMPO ---------
+plt.figure(figsize=(10, 5))
+plt.plot(range(1, 31), execution_times_ms, marker='o', color='blue')
 plt.xlabel('Número de arreglo')
 plt.ylabel('Tiempo de ejecución (milisegundos)')
 plt.title(f'Subset Sum con memoización - T = {T}')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+# --------- SEGUNDA GRÁFICA: TIEMPO vs O(n*T) ---------
+plt.figure(figsize=(10, 5))
+plt.plot(range(1, 31), execution_times_ms, marker='o', label='Tiempo real (ms)')
+plt.plot(range(1, 31), theoretical_O, marker='x', linestyle='--', label='O(n*T)')
+plt.xlabel('Número de arreglo')
+plt.ylabel('Tiempo / Costo Teórico')
+plt.title(f'Subset Sum - Tiempo real vs O(n*T) - T = {T}')
+plt.legend()
 plt.grid(True)
 plt.tight_layout()
 plt.show()
